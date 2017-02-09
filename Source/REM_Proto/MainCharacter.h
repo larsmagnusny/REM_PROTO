@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "REM_GameModeBase.h"
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
@@ -73,4 +74,7 @@ private:
 	FVector MoveTo = FVector(0, 0, 0);
 
 	UStaticMeshComponent* LastComponentMousedOver = nullptr;
+
+	// Pointers to other classes
+	AREM_GameModeBase* GameMode = nullptr;
 };

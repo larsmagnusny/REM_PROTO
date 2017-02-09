@@ -100,3 +100,37 @@ void AREM_GameModeBase::SetMainCamera(UCameraComponent* Cam)
 {
 	MainCamera = Cam;
 }
+
+bool AREM_GameModeBase::IsInteractible(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+			return true;
+	}
+
+	return false;
+}
+
+void AREM_GameModeBase::AddInteractableObject(AActor* Actor, UInteractableObject* Object)
+{
+	InteractableObject Obj;
+	Obj.ParentObject = Actor;
+	Obj.Object = Object;
+	InteractableObjects.Add(Obj);
+}
+void AREM_GameModeBase::RemoveInteractableObject(AActor* Actor)
+{
+	
+}
+
+UInteractableObject* AREM_GameModeBase::GetInteractor(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+			return InteractableObjects[i].Object;
+	}
+
+	return nullptr;
+}

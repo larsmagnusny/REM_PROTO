@@ -3,7 +3,8 @@
 #include "REM_Proto.h"
 #include "MainCharacter.h"
 #include "AI/Navigation/NavigationSystem.h"
-#include "REM_GameModeBase.h"
+#include "InteractableObject.h"
+
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -41,7 +42,7 @@ void AMainCharacter::BeginPlay()
 
 	SkeletalMeshComponent = Cast<USkeletalMeshComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 
-	AREM_GameModeBase* GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());
+	GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());
 	GameMode->SetMainCamera(TopDownCameraComponent);
 }
 
@@ -59,7 +60,7 @@ void AMainCharacter::Tick( float DeltaTime )
 	if (MouseControlled)
 	{
 		FHitResult Hit;
-		GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery3, false, Hit);
+		GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, Hit);
 
 		if (Hit.GetActor())
 		{
@@ -67,14 +68,15 @@ void AMainCharacter::Tick( float DeltaTime )
 			{
 				AStaticMeshActor* OurActor = Cast<AStaticMeshActor>(Hit.GetActor());
 				UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(OurActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
-
+				
+				
 				if (MeshComponent != LastComponentMousedOver)
 				{
 					if (LastComponentMousedOver)
 						LastComponentMousedOver->SetRenderCustomDepth(false);
 				}
 
-				if (MeshComponent->Mobility == EComponentMobility::Movable)
+				if (GameMode->IsInteractible(Hit.GetActor()))
 				{
 					MeshComponent->SetRenderCustomDepth(true);
 					LastComponentMousedOver = MeshComponent;
@@ -175,11 +177,29 @@ void AMainCharacter::AxisMoveUpDown(float value)
 void AMainCharacter::MouseLeftClick()
 {
 	FHitResult Hit;
-	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, Hit);
+	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, Hit);
 
-	if (Hit.GetActor())
+	AActor* HitActor = Hit.GetActor();
+
+	if (HitActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hitting: %s"), *Hit.ImpactPoint.ToString());
+		if (GameMode->IsInteractible(HitActor))
+		{
+			UInteractableObject* Component = GameMode->GetInteractor(HitActor);
+
+			if (Component)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Got interactor, sending activate command..."));
+				Component->ActivateObject();
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("Can't find interactor"));
+			}
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("This object is not interactable!"));
+		}
+
 		MoveTo = Hit.ImpactPoint;
 		MouseMove = true;
 	}
