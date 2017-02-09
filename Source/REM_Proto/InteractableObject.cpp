@@ -3,11 +3,11 @@
 #include "REM_Proto.h"
 #include "InteractableObject.h"
 
-
 // Sets default values for this component's properties
 UInteractableObject::UInteractableObject()
 {
-
+	// Register the door as an interactible object in the gamemodeclass...
+	
 }
 
 void UInteractableObject::ActivateObject()
