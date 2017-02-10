@@ -30,6 +30,8 @@ void UDoor::BeginPlay()
 	AREM_GameModeBase* GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());
 
 	GameMode->AddInteractableObject(GetOwner(), Cast<UInteractableObject>(this));
+
+	InitialRotation = GetOwner()->GetActorRotation();
 }
 
 
@@ -38,12 +40,47 @@ void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
+	FRotator rotator = GetOwner()->GetActorRotation();
+
+	if (DoorOpen)
+	{
+		if (RotationOffset > -90.0f)
+		{
+			RotationOffset -= 200*DeltaTime;
+		}
+		else {
+			RotationOffset = -90.0f;
+		}
+	}
+	else
+	{
+		if (RotationOffset < 0)
+		{
+			RotationOffset += 200 * DeltaTime;
+		}
+		else
+		{
+			RotationOffset = 0.f;
+		}
+	}
+
+	rotator.Yaw = InitialRotation.Yaw + RotationOffset;
+
+	GetOwner()->SetActorRotation(rotator);
 }
 
 void UDoor::ActivateObject()
 {
-	print("Door is locked! There must be a key around here somewhere!");
+	//print("Door is locked! There must be a key around here somewhere!");
+
+	if (!DoorOpen)
+	{
+		DoorOpen = true;
+	}
+	else if (DoorOpen)
+	{
+		DoorOpen = false;
+	}
 }
 
 void UDoor::OpenDoor()

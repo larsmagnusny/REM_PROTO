@@ -44,6 +44,10 @@ public:
 
 	void UpdateMovement();
 	void UpdateRotation();
+
+	// Misc functions
+	float GetDistanceBetweenActors(AActor* Actor1, AActor* Actor2);
+
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -71,6 +75,8 @@ private:
 
 	// MouseMovement
 	bool MouseMove = false;
+	bool DelayActivate = false;
+	UInteractableObject* DelayActivateObject = nullptr;
 	FVector MoveTo = FVector(0, 0, 0);
 
 	UStaticMeshComponent* LastComponentMousedOver = nullptr;

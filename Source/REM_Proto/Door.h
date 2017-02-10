@@ -27,5 +27,7 @@ public:
 	void CloseDoor();
 		
 private:
+	FRotator InitialRotation;
+	float RotationOffset = 0.f;
 	bool DoorOpen = false;
 };

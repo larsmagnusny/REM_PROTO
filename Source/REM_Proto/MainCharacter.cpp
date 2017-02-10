@@ -22,7 +22,7 @@ AMainCharacter::AMainCharacter()
 	CameraBoom->bAbsoluteRotation = true; // Don't want arm to rotate when character does
 	CameraBoom->TargetArmLength = 800.f;
 	CameraBoom->RelativeRotation = FRotator(-60.f, 0.f, 0.f);
-	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	CameraBoom->bDoCollisionTest = true; // Don't want to pull camera in when it collides with level
 
 										  // Create a camera...
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
@@ -94,12 +94,20 @@ void AMainCharacter::Tick( float DeltaTime )
 			UNavigationSystem* const NavSys = GetWorld()->GetNavigationSystem();
 			float const Distance = FVector::Dist(MoveTo, GetActorLocation());
 
-			if (NavSys && (Distance > 10.0f))
+			if (NavSys && (Distance > 80.0f))
 			{
 				NavSys->SimpleMoveToLocation(Controller, MoveTo);
 			}
 			else {
 				MouseMove = false;
+
+				if (DelayActivate && DelayActivateObject)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Got interactor, sending activate command..."));
+					DelayActivateObject->ActivateObject();
+					DelayActivate = false;
+					DelayActivateObject = nullptr;
+				}
 			}
 		}
 	}
@@ -189,15 +197,21 @@ void AMainCharacter::MouseLeftClick()
 
 			if (Component)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Got interactor, sending activate command..."));
-				Component->ActivateObject();
+				if (GetDistanceBetweenActors(HitActor, this) > 100)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Not close enough to activate, moving to it..."));
+					DelayActivate = true;
+					DelayActivateObject = Component;
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Got interactor, sending activate command..."));
+					Component->ActivateObject();
+				}
 			}
 			else {
 				UE_LOG(LogTemp, Warning, TEXT("Can't find interactor"));
 			}
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("This object is not interactable!"));
 		}
 
 		MoveTo = Hit.ImpactPoint;
@@ -278,4 +292,10 @@ void AMainCharacter::UpdateRotation()
 	}
 
 	SkeletalMeshComponent->SetWorldRotation(Rotation);
+}
+
+// Misc functions
+float AMainCharacter::GetDistanceBetweenActors(AActor* Actor1, AActor* Actor2)
+{
+	return FVector::Dist(Actor1->GetActorLocation(), Actor2->GetActorLocation());
 }
