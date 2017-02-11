@@ -10,12 +10,18 @@ public:
 	Inventory();
 	~Inventory();
 
+	// Add an item to the inventory
 	bool AddItem(InventoryItem* item);
+
+	// Remove an item from the inventory
 	void DiscardItem(InventoryItem* item);
+
+	// Spawn the object in the world and remove it from the inventory
 	void PutObjectInWorld(InventoryItem* item);
 
 	// Reference to the owner of the inventory
 	AActor* Owner = nullptr;
 private:
+	// Where the items get stored, data type defined in InventoryItem.h
 	TArray<InventoryItem*> InventoryStorage;
 };

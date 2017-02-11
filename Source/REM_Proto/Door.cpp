@@ -27,10 +27,12 @@ void UDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Get a pointer to the GameMode class so you can add this class instance as an "interactor" ( Something the player can click )
 	AREM_GameModeBase* GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());
 
 	GameMode->AddInteractableObject(GetOwner(), Cast<UInteractableObject>(this));
 
+	// Store the initial rotation of the door so it can go back to this rotation after being closed
 	InitialRotation = GetOwner()->GetActorRotation();
 }
 
@@ -40,8 +42,10 @@ void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
+	// Get the current rotation of the door
 	FRotator rotator = GetOwner()->GetActorRotation();
 
+	// If the door is being opened open the door partially every frame untill it has a 90 degree difference in rotation from the original position
 	if (DoorOpen)
 	{
 		if (RotationOffset > -90.0f)
@@ -52,7 +56,7 @@ void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponent
 			RotationOffset = -90.0f;
 		}
 	}
-	else
+	else // If the door is being closed partially subtract every frame untill it has a 0 degree rotation...
 	{
 		if (RotationOffset < 0)
 		{
@@ -64,28 +68,24 @@ void UDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponent
 		}
 	}
 
+	// Set the rotation of the door
 	rotator.Yaw = InitialRotation.Yaw + RotationOffset;
-
 	GetOwner()->SetActorRotation(rotator);
 }
 
 void UDoor::ActivateObject()
 {
+	// If the player has activated the door by clicking on it toggle dooropen
 	//print("Door is locked! There must be a key around here somewhere!");
 
 	if (!DoorOpen)
-	{
-		DoorOpen = true;
-	}
+		OpenDoor();
 	else if (DoorOpen)
-	{
-		DoorOpen = false;
-	}
+		CloseDoor();
 }
 
 void UDoor::OpenDoor()
 {
-	UE_LOG(LogTemp, Error, TEXT("Door Event Called!"));
 	DoorOpen = true;
 }
 

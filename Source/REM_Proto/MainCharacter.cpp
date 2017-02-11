@@ -37,11 +37,13 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorld()->GetFirstPlayerController()->SetViewTarget(this);	// Switch to the cameracomponent attached to this player
+	// Switch to the cameracomponent attached to this player
+	GetWorld()->GetFirstPlayerController()->SetViewTarget(this);	
 	SetupPlayerInputComponent(GetWorld()->GetFirstPlayerController()->InputComponent);
 
 	SkeletalMeshComponent = Cast<USkeletalMeshComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass()));
 
+	// Get a pointer to the gamemodeclass so we can set the camera and do other things later
 	GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());
 	GameMode->SetMainCamera(TopDownCameraComponent);
 	
@@ -54,56 +56,75 @@ void AMainCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	// Keyboard controlled character
 	if (KeyboardControlled)
 	{
 		UpdateRotation();
 		UpdateMovement();
 	}
 
+	// Mouse Controlled character
 	if (MouseControlled)
 	{
+		// Raycast under the mouse so we can highlight the objects
 		FHitResult Hit;
 		GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, Hit);
 
+		// If we hit an actor
 		if (Hit.GetActor())
 		{
+			// If the actor is a AStaticMeshActor
 			if (Hit.GetActor()->IsA(AStaticMeshActor::StaticClass()))
 			{
+				// Get a pointer to the actor and MeshComponent
 				AStaticMeshActor* OurActor = Cast<AStaticMeshActor>(Hit.GetActor());
 				UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(OurActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
 				
-				
+				// Check if didn't already highligh it last frame
 				if (MeshComponent != LastComponentMousedOver)
 				{
+					// If it has not been set dont do anything
 					if (LastComponentMousedOver)
 						LastComponentMousedOver->SetRenderCustomDepth(false);
 				}
 
+				// Tell the gamemodeclass to check if this actor is interactable
 				if (GameMode->IsInteractible(Hit.GetActor()))
 				{
+					// If it is, set a highlight over it
 					MeshComponent->SetRenderCustomDepth(true);
+
+					// Remember this for the next frame
 					LastComponentMousedOver = MeshComponent;
 				}
 			}
 		}
 		else {
+			// If we are not mousing over an interactable object
 			if (LastComponentMousedOver)
 				LastComponentMousedOver->SetRenderCustomDepth(false);
 			LastComponentMousedOver = nullptr;
 		}
 
+		// If the player has clicked somewhere on the screen to move
 		if (MouseMove)
 		{
+			// Get a pointer to the built in navigation system in Unreal 4
 			UNavigationSystem* const NavSys = GetWorld()->GetNavigationSystem();
+
+			// Get the distance to the destination
 			float const Distance = FVector::Dist(MoveTo, GetActorLocation());
 
+			// If we are not within 80 cm of the destination we should move towards it 
 			if (NavSys && (Distance > 80.0f))
 			{
 				NavSys->SimpleMoveToLocation(Controller, MoveTo);
 			}
 			else {
+				// If we are at the destination
 				MouseMove = false;
 
+				// Activate the object if we clicked on an interactable object earlier
 				if (DelayActivate)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Got interactor, sending activate command..."));
@@ -195,19 +216,25 @@ void AMainCharacter::AxisMoveUpDown(float value)
 
 void AMainCharacter::MouseLeftClick()
 {
+	// If the player has left clicked we should raycast under the mouse
 	FHitResult Hit;
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, Hit);
 
 	AActor* HitActor = Hit.GetActor();
 
+	// if the player hit an object
 	if (HitActor)
 	{
+		// Check if the object is interactable
 		if (GameMode->IsInteractible(HitActor))
 		{
+			// Get the instance pointer to the Interactor from the gamemode where we keep track of all interactable items
 			UInteractableObject* Component = GameMode->GetInteractor(HitActor);
 
+			// If it is not a nullptr
 			if (Component)
 			{
+				// Check how close we are to it
 				if (GetDistanceBetweenActors(HitActor, this) > 100)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Not close enough to activate, moving to it..."));
@@ -221,10 +248,12 @@ void AMainCharacter::MouseLeftClick()
 				}
 			}
 			else {
+				// If the interactor does not exist that means we still have to check if the AInteractableStaticMeshObject exists for that object
 				UE_LOG(LogTemp, Warning, TEXT("Can't find interactor checking if it actually is a StaticMeshInteractor"));
 
 				AInteractableStaticMeshObject* StaticMeshInteractor = GameMode->GetStaticMeshInteractor(HitActor);
 
+				// If it exists do the same thing as above
 				if (StaticMeshInteractor)
 				{
 					if (GetDistanceBetweenActors(HitActor, this) > 100)
@@ -327,6 +356,7 @@ float AMainCharacter::GetDistanceBetweenActors(AActor* Actor1, AActor* Actor2)
 	return FVector::Dist(Actor1->GetActorLocation(), Actor2->GetActorLocation());
 }
 
+// Adds items to the inventory
 bool AMainCharacter::AddItemToInventory(InventoryItem* item)
 {
 	if (PlayerInventory)

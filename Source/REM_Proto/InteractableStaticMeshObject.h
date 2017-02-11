@@ -17,7 +17,8 @@ public:
 	// Sets default values for this component's properties
 	AInteractableStaticMeshObject();
 
+	// This is the function all StaticMeshActors inherit from
+	// The reason we are not inheriting from UIneractableObject is because that inherits from UActorComponent
+	// Items that are visible in the world are StaticMeshActors
 	virtual void ActivateObject(AActor* Player);
-	
-	
 };

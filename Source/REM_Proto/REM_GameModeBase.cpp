@@ -17,23 +17,11 @@ AREM_GameModeBase::AREM_GameModeBase()
 void AREM_GameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	float Scale = 2.0f;
-
-	for (int32 i = 0; i < 4; i++)
-	{
-		for (int32 j = 0; j < 4; j++)
-		{
-			Points[i][j] = Directions[j] * Scale;
-		}
-	}
 }
 
 void AREM_GameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	
 }
 
 void AREM_GameModeBase::RayCastArray(FHitResult& Ray)

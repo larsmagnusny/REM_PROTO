@@ -41,10 +41,6 @@ private:
 	// Pointer to camera
 	UCameraComponent* MainCamera = nullptr;
 	TArray<InteractableObject> InteractableObjects;
-	FVector2D Points[4][4];
-	FVector2D Directions[4] = { FVector2D(1, 1), FVector2D(-1, 1), FVector2D(1, -1), FVector2D(-1, -1) };
 
 	UStaticMeshComponent* LastMeshComponent = nullptr;
-
-	
 };

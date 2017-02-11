@@ -15,5 +15,7 @@ public:
 	// Sets default values for this component's properties
 	UInteractableObject();
 
+	// The function all interactible object components inherit
+	// This can be triggered from MainCharacter.cpp on all objects that are interactible and inherit from this class
 	virtual void ActivateObject();
 };

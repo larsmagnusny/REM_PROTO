@@ -21,6 +21,7 @@ public:
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
+	// Inherited from UInteractableObject so we don't have to include 1000 files to interact with 1000 different objects...
 	virtual void ActivateObject() override;
 
 	void OpenDoor();

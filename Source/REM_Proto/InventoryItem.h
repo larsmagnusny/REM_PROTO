@@ -9,7 +9,12 @@ public:
 	InventoryItem(UStaticMesh* Mesh, FString Name);
 	~InventoryItem();
 	
+	// Store the pointer to the mesh so we can use it later if the player decides to drop the item...
 	UStaticMesh* MeshToUse;
+
+	// Store the name
 	FString ObjectName;
+
+	// Store the icon of the object so we can show it in the hud...
 	UTexture* texture;
 };
