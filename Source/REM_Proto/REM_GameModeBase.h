@@ -3,6 +3,8 @@
 #pragma once
 
 #include "InteractableObject.h"
+#include "InteractableStaticMeshObject.h"
+#include "Inventory.h"
 #include "GameFramework/GameModeBase.h"
 #include "REM_GameModeBase.generated.h"
 
@@ -18,6 +20,7 @@ public:
 	{
 		AActor* ParentObject = nullptr;
 		UInteractableObject* Object = nullptr;
+		AInteractableStaticMeshObject* StaticMeshObject = nullptr;
 	};
 
 	AREM_GameModeBase();
@@ -28,10 +31,12 @@ public:
 	void RayCastArray(FHitResult& Ray);
 
 	// We need to check if we can highlight an object!
-	void AddInteractableObject(AActor* Actor, UInteractableObject* Object);
+	void AddInteractableObject(AActor* Actor, UInteractableObject* Object = nullptr);
+	void AddInteractableObject(AActor* Actor, AInteractableStaticMeshObject* Object = nullptr);
 	void RemoveInteractableObject(AActor* Actor);
 	bool IsInteractible(AActor* Actor);
 	UInteractableObject* GetInteractor(AActor* Actor);
+	AInteractableStaticMeshObject* GetStaticMeshInteractor(AActor* Actor);
 private:
 	// Pointer to camera
 	UCameraComponent* MainCamera = nullptr;
@@ -40,4 +45,6 @@ private:
 	FVector2D Directions[4] = { FVector2D(1, 1), FVector2D(-1, 1), FVector2D(1, -1), FVector2D(-1, -1) };
 
 	UStaticMeshComponent* LastMeshComponent = nullptr;
+
+	
 };

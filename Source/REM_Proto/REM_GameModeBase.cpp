@@ -64,9 +64,25 @@ void AREM_GameModeBase::AddInteractableObject(AActor* Actor, UInteractableObject
 	Obj.Object = Object;
 	InteractableObjects.Add(Obj);
 }
+
+void AREM_GameModeBase::AddInteractableObject(AActor* Actor, AInteractableStaticMeshObject* Object)
+{
+	InteractableObject Obj;
+	Obj.ParentObject = Actor;
+	Obj.StaticMeshObject = Object;
+	InteractableObjects.Add(Obj);
+}
+
 void AREM_GameModeBase::RemoveInteractableObject(AActor* Actor)
 {
-	
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+		{
+			InteractableObjects.RemoveAt(i);
+			break;
+		}
+	}
 }
 
 UInteractableObject* AREM_GameModeBase::GetInteractor(AActor* Actor)
@@ -75,6 +91,17 @@ UInteractableObject* AREM_GameModeBase::GetInteractor(AActor* Actor)
 	{
 		if (InteractableObjects[i].ParentObject == Actor)
 			return InteractableObjects[i].Object;
+	}
+
+	return nullptr;
+}
+
+AInteractableStaticMeshObject* AREM_GameModeBase::GetStaticMeshInteractor(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+			return InteractableObjects[i].StaticMeshObject;
 	}
 
 	return nullptr;

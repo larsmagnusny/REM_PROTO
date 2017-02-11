@@ -44,6 +44,9 @@ void AMainCharacter::BeginPlay()
 
 	GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());
 	GameMode->SetMainCamera(TopDownCameraComponent);
+	
+	// Initialize Inventory
+	PlayerInventory = new Inventory();
 }
 
 // Called every frame
@@ -101,12 +104,20 @@ void AMainCharacter::Tick( float DeltaTime )
 			else {
 				MouseMove = false;
 
-				if (DelayActivate && DelayActivateObject)
+				if (DelayActivate)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Got interactor, sending activate command..."));
-					DelayActivateObject->ActivateObject();
+					if (DelayActivateObject)
+					{
+						DelayActivateObject->ActivateObject();
+						DelayActivateObject = nullptr;
+					}
+					if (DelayActivateStaticMeshObject)
+					{
+						DelayActivateStaticMeshObject->ActivateObject(Cast<AActor>(this));
+						DelayActivateStaticMeshObject = nullptr;
+					}
 					DelayActivate = false;
-					DelayActivateObject = nullptr;
 				}
 			}
 		}
@@ -210,7 +221,23 @@ void AMainCharacter::MouseLeftClick()
 				}
 			}
 			else {
-				UE_LOG(LogTemp, Warning, TEXT("Can't find interactor"));
+				UE_LOG(LogTemp, Warning, TEXT("Can't find interactor checking if it actually is a StaticMeshInteractor"));
+
+				AInteractableStaticMeshObject* StaticMeshInteractor = GameMode->GetStaticMeshInteractor(HitActor);
+
+				if (StaticMeshInteractor)
+				{
+					if (GetDistanceBetweenActors(HitActor, this) > 100)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Not close enough to pick up object, moving to it..."));
+						DelayActivate = true;
+						DelayActivateStaticMeshObject = StaticMeshInteractor;
+					}
+					else {
+						UE_LOG(LogTemp, Warning, TEXT("Got StaticMeshInteractor, sending activate command..."));
+						StaticMeshInteractor->ActivateObject(Cast<AActor>(this));
+					}
+				}
 			}
 		}
 
@@ -298,4 +325,12 @@ void AMainCharacter::UpdateRotation()
 float AMainCharacter::GetDistanceBetweenActors(AActor* Actor1, AActor* Actor2)
 {
 	return FVector::Dist(Actor1->GetActorLocation(), Actor2->GetActorLocation());
+}
+
+bool AMainCharacter::AddItemToInventory(InventoryItem* item)
+{
+	if (PlayerInventory)
+		return PlayerInventory->AddItem(item);
+	else
+		return false;
 }

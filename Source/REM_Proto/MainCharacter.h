@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "REM_GameModeBase.h"
+#include "InventoryItem.h"
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
@@ -56,6 +56,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	// Inventory functions
+	bool AddItemToInventory(InventoryItem* item);
+
 private:
 	bool KeyboardMovingLeft = false;
 	bool KeyboardMovingRight = false;
@@ -77,10 +80,14 @@ private:
 	bool MouseMove = false;
 	bool DelayActivate = false;
 	UInteractableObject* DelayActivateObject = nullptr;
+	AInteractableStaticMeshObject* DelayActivateStaticMeshObject = nullptr;
 	FVector MoveTo = FVector(0, 0, 0);
 
 	UStaticMeshComponent* LastComponentMousedOver = nullptr;
 
 	// Pointers to other classes
 	AREM_GameModeBase* GameMode = nullptr;
+
+	// Player Inventory
+	Inventory* PlayerInventory = nullptr;
 };
