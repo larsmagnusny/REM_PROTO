@@ -66,8 +66,5 @@ void AREM_HUD::DrawHUD()
 			UTexture2D* Texture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *(tex)));
 			Slots[i]->SetBrushFromTexture(Texture, true);
 		}
-		//Slots[i]->SetBrushFromTexture(tex, true);
-			//Slots[i]->SetBrush(FSlateBrush());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *tex);
 	}
 }

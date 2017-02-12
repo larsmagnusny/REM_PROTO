@@ -12,6 +12,13 @@ AREM_GameModeBase::AREM_GameModeBase()
 	DefaultPawnClass = nullptr;
 
 	HUDClass = AREM_HUD::StaticClass();
+
+	static ConstructorHelpers::FObjectFinder<UClass> Blueprint(TEXT("Class'/Game/Blueprints/PlayerController.PlayerController_C'"));
+
+	if (Blueprint.Succeeded())
+	{
+		PlayerControllerClass = (UClass*)Blueprint.Object;
+	}
 }
 
 void AREM_GameModeBase::BeginPlay()

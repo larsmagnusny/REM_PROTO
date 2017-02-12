@@ -20,10 +20,23 @@ public:
 	
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
+
+	UFUNCTION(BlueprintCallable, Category="Cursor Reference")
+	void SetCursor(UUserWidget* c)
+	{
+		Cursor = c;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Cursor Reference")
+	UUserWidget* GetCursorReference()
+	{
+		return Cursor;
+	}
 private:
 	UClass* ActionBarClass = nullptr;
 	UUserWidget* ActionBar = nullptr;
 	TArray<UImage*> Slots;
 	AREM_GameModeBase* GameMode = nullptr;
 	AMainCharacter* MainCharacter = nullptr;
+	UUserWidget* Cursor = nullptr;
 };
