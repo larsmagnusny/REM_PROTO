@@ -38,7 +38,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FString ObjectName;
 	UPROPERTY(EditAnywhere)
-	UTexture* Icon;
+	FString Icon;
 
 	bool needsDelete = false;
 	

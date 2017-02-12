@@ -37,10 +37,18 @@ public:
 	bool IsInteractible(AActor* Actor);
 	UInteractableObject* GetInteractor(AActor* Actor);
 	AInteractableStaticMeshObject* GetStaticMeshInteractor(AActor* Actor);
+	
+	UFUNCTION(BlueprintCallable, Category="Character")
+	ACharacter* GetMainCharacter();
+
+	void SetMainCharacter(ACharacter* Char);
 private:
 	// Pointer to camera
 	UCameraComponent* MainCamera = nullptr;
 	TArray<InteractableObject> InteractableObjects;
 
 	UStaticMeshComponent* LastMeshComponent = nullptr;
+
+	// Pointer to our main character
+	ACharacter* MainCharacter = nullptr;
 };

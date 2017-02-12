@@ -30,3 +30,20 @@ void Inventory::PutObjectInWorld(InventoryItem* item)
 {
 
 }
+
+TArray<InventoryItem*> Inventory::GetInventory()
+{
+	return InventoryStorage;
+}
+
+FString Inventory::GetTextureAt(int i)
+{
+	if (i <= InventoryStorage.Num() - 1)
+		return InventoryStorage[i]->texture;
+	else
+		return "";
+}
+int Inventory::GetSize()
+{
+	return InventoryStorage.Num();
+}

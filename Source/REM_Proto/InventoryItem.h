@@ -6,7 +6,7 @@
 class REM_PROTO_API InventoryItem
 {
 public:
-	InventoryItem(UStaticMesh* Mesh, FString Name);
+	InventoryItem(UStaticMesh* Mesh, FString Name, FString tex = "");
 	~InventoryItem();
 	
 	// Store the pointer to the mesh so we can use it later if the player decides to drop the item...
@@ -16,5 +16,5 @@ public:
 	FString ObjectName;
 
 	// Store the icon of the object so we can show it in the hud...
-	UTexture* texture;
+	FString texture;
 };

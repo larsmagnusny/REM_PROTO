@@ -75,7 +75,7 @@ void AInventoryItemObject::RemoveFromWorld()
 
 InventoryItem* AInventoryItemObject::ToInventoryItem()
 {
-	InventoryItem* Ret = new InventoryItem(MeshToUse, ObjectName);
+	InventoryItem* Ret = new InventoryItem(MeshToUse, ObjectName, Icon);
 
 	return Ret;
 }

@@ -49,6 +49,10 @@ void AMainCharacter::BeginPlay()
 	
 	// Initialize Inventory
 	PlayerInventory = new Inventory();
+
+	// Make the game mode aware that we exist
+	UE_LOG(LogTemp, Error, TEXT("Main Character set!"));
+	GameMode->SetMainCharacter(this);
 }
 
 // Called every frame
@@ -217,6 +221,9 @@ void AMainCharacter::AxisMoveUpDown(float value)
 void AMainCharacter::MouseLeftClick()
 {
 	// If the player has left clicked we should raycast under the mouse
+	if (!CanClickRaycast)
+		return;
+
 	FHitResult Hit;
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, Hit);
 
@@ -363,4 +370,15 @@ bool AMainCharacter::AddItemToInventory(InventoryItem* item)
 		return PlayerInventory->AddItem(item);
 	else
 		return false;
+}
+
+// Gets the inventory array
+FString AMainCharacter::GetInventoryTextureAt(int index)
+{
+	return PlayerInventory->GetTextureAt(index);
+}
+
+int AMainCharacter::GetInventorySize()
+{
+	return PlayerInventory->GetSize();
 }

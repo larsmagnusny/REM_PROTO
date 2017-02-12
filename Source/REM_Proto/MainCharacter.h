@@ -59,6 +59,17 @@ public:
 	// Inventory functions
 	bool AddItemToInventory(InventoryItem* item);
 
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	FString GetInventoryTextureAt(int index);
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	int GetInventorySize();
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	void SetCanClickRaycast(bool val)
+	{
+		CanClickRaycast = val;
+	}
+
 private:
 	bool KeyboardMovingLeft = false;
 	bool KeyboardMovingRight = false;
@@ -67,6 +78,9 @@ private:
 
 	bool KeyboardControlled = false;
 	bool MouseControlled = true;
+
+	// This is toggled when hovering over a UI element...
+	bool CanClickRaycast = true;
 
 	float Mass = 0.f;
 

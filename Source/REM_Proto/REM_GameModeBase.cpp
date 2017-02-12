@@ -94,3 +94,13 @@ AInteractableStaticMeshObject* AREM_GameModeBase::GetStaticMeshInteractor(AActor
 
 	return nullptr;
 }
+
+ACharacter* AREM_GameModeBase::GetMainCharacter()
+{
+	return MainCharacter;
+}
+
+void AREM_GameModeBase::SetMainCharacter(ACharacter* Char)
+{
+	MainCharacter = Char;
+}

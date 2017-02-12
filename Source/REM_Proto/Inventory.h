@@ -19,6 +19,11 @@ public:
 	// Spawn the object in the world and remove it from the inventory
 	void PutObjectInWorld(InventoryItem* item);
 
+	TArray<InventoryItem*> GetInventory();
+
+	FString GetTextureAt(int i);
+	int GetSize();
+
 	// Reference to the owner of the inventory
 	AActor* Owner = nullptr;
 private:
