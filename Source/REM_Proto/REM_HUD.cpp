@@ -74,10 +74,12 @@ void AREM_HUD::DrawHUD()
 		{
 			UTexture2D* Texture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *(tex)));
 			Slots[i]->SetBrushFromTexture(Texture, true);
+			Slots[i]->SetVisibility(ESlateVisibility::Visible);
 		}
 		else
 		{
 			Slots[i]->SetBrush(FSlateBrush());
+			Slots[i]->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }
@@ -85,4 +87,9 @@ void AREM_HUD::DrawHUD()
 void AREM_HUD::SwapElements(int32 index1, int32 index2)
 {
 	MainCharacter->SwapInventoryElements(index1, index2);
+}
+
+void AREM_HUD::DropItem(int32 slotindex, FVector2D HitPoint)
+{
+	MainCharacter->DropItem(slotindex, HitPoint);
 }

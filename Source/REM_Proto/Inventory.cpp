@@ -37,12 +37,14 @@ bool Inventory::AddItem(InventoryItem* item)
 
 void Inventory::DiscardItem(InventoryItem* item)
 {
-
-}
-
-void Inventory::PutObjectInWorld(InventoryItem* item)
-{
-
+	for (int32 i = 0; i < 4; i++)
+	{
+		if (InventoryStorage[i] == item)
+		{
+			InventoryStorage[i] = nullptr;
+			Availablepaces[i] = true;
+		}
+	}
 }
 
 FString Inventory::GetTextureAt(int i)
@@ -80,4 +82,9 @@ int32 Inventory::GetAvailableIndex()
 	}
 
 	return -1;
+}
+
+InventoryItem* Inventory::GetItem(int32 index)
+{
+	return InventoryStorage[index];
 }

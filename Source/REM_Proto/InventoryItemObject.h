@@ -41,6 +41,8 @@ public:
 	FString Icon;
 
 	bool needsDelete = false;
+
+	bool DeferredSpawn = false;
 	
 private:
 	AREM_GameModeBase* GameMode = nullptr;

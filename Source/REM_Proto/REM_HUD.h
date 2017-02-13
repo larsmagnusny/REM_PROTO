@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Swap Inventory Elements")
 	void SwapElements(int32 index1, int32 index2);
 
+	UFUNCTION(BlueprintCallable, Category = "Drop Item")
+	void DropItem(int32 slotindex, FVector2D HitPoint);
+
 private:
 	UClass* ActionBarClass = nullptr;
 	UUserWidget* ActionBar = nullptr;

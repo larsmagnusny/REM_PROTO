@@ -4,6 +4,7 @@
 #include "REM_GameModeBase.h"
 #include "MainCharacter.h"
 #include "REM_HUD.h"
+#include "InventoryItemObject.h"
 
 AREM_GameModeBase::AREM_GameModeBase()
 {
@@ -111,4 +112,37 @@ ACharacter* AREM_GameModeBase::GetMainCharacter()
 void AREM_GameModeBase::SetMainCharacter(ACharacter* Char)
 {
 	MainCharacter = Char;
+}
+
+void AREM_GameModeBase::PutObjectInWorld(InventoryItem* item, FVector2D Hitpoint)
+{
+	if (item)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Should try to spawn item into world now! texture: %s"), *item->texture);
+
+		FVector CharacterLocation = MainCharacter->GetActorLocation();
+
+		FVector2D dir =  Hitpoint - FVector2D(CharacterLocation);
+		dir.Normalize();
+
+		FTransform t;
+		t.SetScale3D(FVector(1.0f, 1.0f, 1.0f));
+		t.SetLocation(CharacterLocation + 50*FVector(dir, 0.5));
+
+		auto MyDeferredActor = Cast<AInventoryItemObject>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, AInventoryItemObject::StaticClass(), t));
+
+		if (MyDeferredActor)
+		{
+			MyDeferredActor->DeferredSpawn = true;
+			MyDeferredActor->MeshToUse = item->MeshToUse;
+			MyDeferredActor->Icon = item->texture;
+			MyDeferredActor->ObjectName = item->ObjectName;
+			MyDeferredActor->InitObject();
+
+
+			UGameplayStatics::FinishSpawningActor(MyDeferredActor, t);
+
+			Cast<AMainCharacter>(MainCharacter)->DiscardItem(item);
+		}
+	}
 }

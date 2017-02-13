@@ -16,9 +16,6 @@ public:
 	// Remove an item from the inventory
 	void DiscardItem(InventoryItem* item);
 
-	// Spawn the object in the world and remove it from the inventory
-	void PutObjectInWorld(InventoryItem* item);
-
 	TArray<InventoryItem*> GetInventory();
 
 	FString GetTextureAt(int i);
@@ -30,9 +27,10 @@ public:
 	void Swap(int32 index1, int32 index2);
 
 	int32 GetAvailableIndex();
+
+	InventoryItem* GetItem(int32 index);
 private:
 	// Where the items get stored, data type defined in InventoryItem.h
 	InventoryItem* InventoryStorage[4];
 	bool Availablepaces[4]{ true, true, true, true};
-
 };

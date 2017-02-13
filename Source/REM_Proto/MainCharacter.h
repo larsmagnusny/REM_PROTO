@@ -72,6 +72,10 @@ public:
 
 	void SwapInventoryElements(int32 index1, int32 index2);
 
+	void DropItem(int32 slotindex, FVector2D EndPoint);
+
+	void DiscardItem(InventoryItem* item);
+
 private:
 	bool KeyboardMovingLeft = false;
 	bool KeyboardMovingRight = false;

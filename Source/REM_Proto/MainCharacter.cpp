@@ -388,3 +388,13 @@ void AMainCharacter::SwapInventoryElements(int32 index1, int32 index2)
 {
 	PlayerInventory->Swap(index1, index2);
 }
+
+void AMainCharacter::DropItem(int32 slotindex, FVector2D EndPoint)
+{
+	GameMode->PutObjectInWorld(PlayerInventory->GetItem(slotindex), EndPoint);
+}
+
+void AMainCharacter::DiscardItem(InventoryItem* item)
+{
+	PlayerInventory->DiscardItem(item);
+}

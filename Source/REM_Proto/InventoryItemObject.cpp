@@ -14,7 +14,8 @@ AInventoryItemObject::AInventoryItemObject()
 // Called when the game starts
 void AInventoryItemObject::BeginPlay()
 {
-	InitObject();
+	if(!DeferredSpawn)
+		InitObject();
 }
 
 // Called every frame
@@ -44,18 +45,20 @@ void AInventoryItemObject::InitObject()
 	// Set the mesh and material/s
 	UStaticMeshComponent* MeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
 
-	// Set Mesh
-	MeshComponent->SetStaticMesh(MeshToUse);
-
-	// Set Materials
-	for (int32 i = 0; i < MaterialsToUse.Num(); i++)
-		MeshComponent->SetMaterial(i, MaterialsToUse[i]);
-	
 
 	// Make the object simulate physics...
 	MeshComponent->SetMobility(EComponentMobility::Movable);
 	MeshComponent->SetSimulatePhysics(true);
 	MeshComponent->bGenerateOverlapEvents = true;
+
+	// Set Mesh
+	MeshComponent->SetStaticMesh(MeshToUse);
+
+	MeshComponent->SetMassOverrideInKg(NAME_None, 100.0f, true);
+
+	// Set Materials
+	for (int32 i = 0; i < MaterialsToUse.Num(); i++)
+		MeshComponent->SetMaterial(i, MaterialsToUse[i]);
 
 	// Make the object Interactable
 	GameMode = Cast<AREM_GameModeBase>(GetWorld()->GetAuthGameMode());

@@ -43,6 +43,9 @@ public:
 	ACharacter* GetMainCharacter();
 
 	void SetMainCharacter(ACharacter* Char);
+
+	// Spawn the object in the world and remove it from the inventory
+	void PutObjectInWorld(InventoryItem* item, FVector2D Hitpoint);
 private:
 	// Pointer to camera
 	UCameraComponent* MainCamera = nullptr;
