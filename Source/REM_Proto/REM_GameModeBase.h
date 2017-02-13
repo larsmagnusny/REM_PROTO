@@ -28,9 +28,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	void SetMainCamera(UCameraComponent* Cam);
-<<<<<<< HEAD
-	void RayCastArray(FHitResult* Rays, FVector* StartPoints, FVector* EndPoints, int size);
-=======
+
 	void RayCastArray(FHitResult& Ray);
 
 	// We need to check if we can highlight an object!
@@ -45,7 +43,6 @@ public:
 	ACharacter* GetMainCharacter();
 
 	void SetMainCharacter(ACharacter* Char);
->>>>>>> c45fd19053385ff5e2237c99a5c2d2e1864166b1
 private:
 	// Pointer to camera
 	UCameraComponent* MainCamera = nullptr;

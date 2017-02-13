@@ -225,11 +225,8 @@ void AMainCharacter::MouseLeftClick()
 		return;
 
 	FHitResult Hit;
-<<<<<<< HEAD
-	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility, true, Hit);
-=======
+
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, Hit);
->>>>>>> c45fd19053385ff5e2237c99a5c2d2e1864166b1
 
 	AActor* HitActor = Hit.GetActor();
 
