@@ -18,7 +18,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	void SetMainCamera(UCameraComponent* Cam);
-	void RayCastArray(FHitResult& Ray);
+	void RayCastArray(FHitResult* Rays, FVector* StartPoints, FVector* EndPoints, int size);
 private:
 	// Pointer to camera
 	UCameraComponent* MainCamera = nullptr;
