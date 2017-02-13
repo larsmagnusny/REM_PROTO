@@ -12,31 +12,31 @@ AREM_GameModeBase::AREM_GameModeBase()
 	DefaultPawnClass = nullptr;
 
 	HUDClass = AREM_HUD::StaticClass();
+
+	static ConstructorHelpers::FObjectFinder<UClass> Blueprint(TEXT("Class'/Game/Blueprints/PlayerController.PlayerController_C'"));
+
+	if (Blueprint.Succeeded())
+	{
+		PlayerControllerClass = (UClass*)Blueprint.Object;
+	}
 }
 
 void AREM_GameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	float Scale = 2.0f;
-
-	for (int32 i = 0; i < 4; i++)
-	{
-		for (int32 j = 0; j < 4; j++)
-		{
-			Points[i][j] = Directions[j] * Scale;
-		}
-	}
 }
 
 void AREM_GameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
-	if (MainCamera)
-	{
-		// Raycast 16 rays from the camera to check if the player can see a wall.
+void AREM_GameModeBase::RayCastArray(FHitResult& Ray)
+{
+	GetWorld()->LineTraceSingleByChannel(Ray, MainCamera->GetComponentLocation(), MainCamera->GetComponentLocation() + MainCamera->GetForwardVector()*1000, ECollisionChannel::ECC_MAX);
+}
 
+<<<<<<< HEAD
 		const int32 size = 6;
 		FHitResult Results[size];
 
@@ -128,9 +128,75 @@ void AREM_GameModeBase::Tick(float DeltaTime)
 				}
 			}
 		}
+=======
+void AREM_GameModeBase::SetMainCamera(UCameraComponent* Cam)
+{
+	MainCamera = Cam;
+}
+
+bool AREM_GameModeBase::IsInteractible(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+			return true;
+	}
+
+	return false;
+}
+
+void AREM_GameModeBase::AddInteractableObject(AActor* Actor, UInteractableObject* Object)
+{
+	InteractableObject Obj;
+	Obj.ParentObject = Actor;
+	Obj.Object = Object;
+	InteractableObjects.Add(Obj);
+}
+
+void AREM_GameModeBase::AddInteractableObject(AActor* Actor, AInteractableStaticMeshObject* Object)
+{
+	InteractableObject Obj;
+	Obj.ParentObject = Actor;
+	Obj.StaticMeshObject = Object;
+	InteractableObjects.Add(Obj);
+}
+
+void AREM_GameModeBase::RemoveInteractableObject(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+		{
+			InteractableObjects.RemoveAt(i);
+			break;
+		}
 	}
 }
 
+UInteractableObject* AREM_GameModeBase::GetInteractor(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+			return InteractableObjects[i].Object;
+	}
+
+	return nullptr;
+}
+
+AInteractableStaticMeshObject* AREM_GameModeBase::GetStaticMeshInteractor(AActor* Actor)
+{
+	for (int32 i = 0; i < InteractableObjects.Num(); i++)
+	{
+		if (InteractableObjects[i].ParentObject == Actor)
+			return InteractableObjects[i].StaticMeshObject;
+>>>>>>> c45fd19053385ff5e2237c99a5c2d2e1864166b1
+	}
+
+	return nullptr;
+}
+
+<<<<<<< HEAD
 void AREM_GameModeBase::RayCastArray(FHitResult* Rays, FVector* StartPoints, FVector* EndPoints, int size)
 {
 	for (int32 i = 0; i < size; ++i)
@@ -141,9 +207,14 @@ void AREM_GameModeBase::RayCastArray(FHitResult* Rays, FVector* StartPoints, FVe
 		GetWorld()->LineTraceSingleByChannel(Rays[i], Start, End, ECollisionChannel::ECC_MAX);
 		DrawDebugLine(GetWorld(), Start, Rays[i].ImpactPoint, FColor(255, 0, 0, 255), false, -1.0f, 0, 10.0f);
 	}
+=======
+ACharacter* AREM_GameModeBase::GetMainCharacter()
+{
+	return MainCharacter;
+>>>>>>> c45fd19053385ff5e2237c99a5c2d2e1864166b1
 }
 
-void AREM_GameModeBase::SetMainCamera(UCameraComponent* Cam)
+void AREM_GameModeBase::SetMainCharacter(ACharacter* Char)
 {
-	MainCamera = Cam;
+	MainCharacter = Char;
 }

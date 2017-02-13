@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "REM_GameModeBase.h"
+#include "InventoryItem.h"
 #include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
@@ -43,6 +44,10 @@ public:
 
 	void UpdateMovement();
 	void UpdateRotation();
+
+	// Misc functions
+	float GetDistanceBetweenActors(AActor* Actor1, AActor* Actor2);
+
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -50,6 +55,20 @@ public:
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
+	// Inventory functions
+	bool AddItemToInventory(InventoryItem* item);
+
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	FString GetInventoryTextureAt(int index);
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	int GetInventorySize();
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	void SetCanClickRaycast(bool val)
+	{
+		CanClickRaycast = val;
+	}
 
 private:
 	bool KeyboardMovingLeft = false;
@@ -59,6 +78,9 @@ private:
 
 	bool KeyboardControlled = false;
 	bool MouseControlled = true;
+
+	// This is toggled when hovering over a UI element...
+	bool CanClickRaycast = true;
 
 	float Mass = 0.f;
 
@@ -70,7 +92,16 @@ private:
 
 	// MouseMovement
 	bool MouseMove = false;
+	bool DelayActivate = false;
+	UInteractableObject* DelayActivateObject = nullptr;
+	AInteractableStaticMeshObject* DelayActivateStaticMeshObject = nullptr;
 	FVector MoveTo = FVector(0, 0, 0);
 
 	UStaticMeshComponent* LastComponentMousedOver = nullptr;
+
+	// Pointers to other classes
+	AREM_GameModeBase* GameMode = nullptr;
+
+	// Player Inventory
+	Inventory* PlayerInventory = nullptr;
 };
