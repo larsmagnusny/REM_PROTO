@@ -70,6 +70,8 @@ public:
 		CanClickRaycast = val;
 	}
 
+	void SwapInventoryElements(int32 index1, int32 index2);
+
 private:
 	bool KeyboardMovingLeft = false;
 	bool KeyboardMovingRight = false;

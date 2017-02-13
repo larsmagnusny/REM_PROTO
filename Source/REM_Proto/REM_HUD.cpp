@@ -15,8 +15,6 @@ AREM_HUD::AREM_HUD()
 		{
 			ActionBarClass = ActionBarWidgetClass.Class;
 		}
-
-
 	}
 }
 
@@ -33,9 +31,11 @@ void AREM_HUD::BeginPlay()
 	// Create the actionbar widget
 	ActionBar = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), ActionBarClass);
 
-	if(ActionBar)
+	if (ActionBar)
+	{
 		ActionBar->AddToViewport();
-
+		ActionBar->GetWidgetFromName(FName("HudReference"));
+	}
 	// Get the images and set the textures according to what is in the player inventory...
 
 	for (int i = 0; i < 4; i++)
@@ -75,5 +75,14 @@ void AREM_HUD::DrawHUD()
 			UTexture2D* Texture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *(tex)));
 			Slots[i]->SetBrushFromTexture(Texture, true);
 		}
+		else
+		{
+			Slots[i]->SetBrush(FSlateBrush());
+		}
 	}
+}
+
+void AREM_HUD::SwapElements(int32 index1, int32 index2)
+{
+	MainCharacter->SwapInventoryElements(index1, index2);
 }

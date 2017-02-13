@@ -5,7 +5,8 @@
 
 Inventory::Inventory()
 {
-
+	for (int32 i = 0; i < 4; i++)
+		InventoryStorage[i] = nullptr;
 }
 
 Inventory::~Inventory()
@@ -16,9 +17,22 @@ Inventory::~Inventory()
 bool Inventory::AddItem(InventoryItem* item)
 {
 	// Make this more complicated later... but for now, it doesn't need to be...
-	InventoryStorage.Add(item);
+	bool ret = true;
 
-	return true;
+	int32 Space = GetAvailableIndex();
+
+	if (Space >= 0)
+	{
+		InventoryStorage[Space] = item;
+		Availablepaces[Space] = false;
+		return true;
+
+		UE_LOG(LogTemp, Error, TEXT("Item added to inventory! At slot num: %s"), *FString::FromInt(Space));
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Could not add item to inventory!"));
+		return false;
+	}
 }
 
 void Inventory::DiscardItem(InventoryItem* item)
@@ -31,19 +45,39 @@ void Inventory::PutObjectInWorld(InventoryItem* item)
 
 }
 
-TArray<InventoryItem*> Inventory::GetInventory()
-{
-	return InventoryStorage;
-}
-
 FString Inventory::GetTextureAt(int i)
 {
-	if (i <= InventoryStorage.Num() - 1)
+	if (i <= 3 && InventoryStorage[i])
 		return InventoryStorage[i]->texture;
 	else
 		return "";
 }
 int Inventory::GetSize()
 {
-	return InventoryStorage.Num();
+	return 4;
+}
+
+void Inventory::Swap(int32 index1, int32 index2)
+{
+	InventoryItem* item1 = InventoryStorage[index2];
+	InventoryStorage[index2] = InventoryStorage[index1];
+	InventoryStorage[index1] = item1;
+
+	bool boolitem1 = Availablepaces[index2];
+
+	Availablepaces[index2] = Availablepaces[index1];
+	Availablepaces[index1] = boolitem1;
+}
+
+int32 Inventory::GetAvailableIndex()
+{
+	for (int32 i = 0; i < 4; i++)
+	{
+		if (Availablepaces[i])
+		{
+			return i;
+		}
+	}
+
+	return -1;
 }

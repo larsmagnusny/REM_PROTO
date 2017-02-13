@@ -383,3 +383,8 @@ int AMainCharacter::GetInventorySize()
 {
 	return PlayerInventory->GetSize();
 }
+
+void AMainCharacter::SwapInventoryElements(int32 index1, int32 index2)
+{
+	PlayerInventory->Swap(index1, index2);
+}

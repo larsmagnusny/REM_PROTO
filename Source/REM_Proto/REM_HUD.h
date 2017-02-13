@@ -32,6 +32,16 @@ public:
 	{
 		return Cursor;
 	}
+
+	UFUNCTION(BlueprintCallable, Category = "Get Slot Number")
+	void GetSlotNumber(int32& num)
+	{
+		num = SlotCounter++;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Swap Inventory Elements")
+	void SwapElements(int32 index1, int32 index2);
+
 private:
 	UClass* ActionBarClass = nullptr;
 	UUserWidget* ActionBar = nullptr;
@@ -39,4 +49,6 @@ private:
 	AREM_GameModeBase* GameMode = nullptr;
 	AMainCharacter* MainCharacter = nullptr;
 	UUserWidget* Cursor = nullptr;
+
+	int32 SlotCounter = 0;
 };

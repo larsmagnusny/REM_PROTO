@@ -26,7 +26,13 @@ public:
 
 	// Reference to the owner of the inventory
 	AActor* Owner = nullptr;
+
+	void Swap(int32 index1, int32 index2);
+
+	int32 GetAvailableIndex();
 private:
 	// Where the items get stored, data type defined in InventoryItem.h
-	TArray<InventoryItem*> InventoryStorage;
+	InventoryItem* InventoryStorage[4];
+	bool Availablepaces[4]{ true, true, true, true};
+
 };
