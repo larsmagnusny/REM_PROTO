@@ -9,7 +9,7 @@ AREM_HUD::AREM_HUD()
 {
 	if (!ActionBar)
 	{
-		static ConstructorHelpers::FClassFinder<UUserWidget> ActionBarWidgetClass(TEXT("WidgetBlueprint'/Game/Meshes/Inventory.Inventory_C'"));
+		static ConstructorHelpers::FClassFinder<UUserWidget> ActionBarWidgetClass(TEXT("Class'/Game/Blueprints/Inventory.Inventory_C'"));
 		
 		if (ActionBarWidgetClass.Succeeded())
 		{
@@ -32,17 +32,26 @@ void AREM_HUD::BeginPlay()
 
 	// Create the actionbar widget
 	ActionBar = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), ActionBarClass);
-	ActionBar->AddToViewport();
+
+	if(ActionBar)
+		ActionBar->AddToViewport();
 
 	// Get the images and set the textures according to what is in the player inventory...
 
 	for (int i = 0; i < 4; i++)
 	{
-		FString name = "Hotbar";
+		FString name = "Slot";
 
 		name += FString::FromInt(i);
+		UUserWidget* Slot = Cast<UUserWidget>(ActionBar->GetWidgetFromName(FName(*name)));
 
-		Slots.Add(Cast<UImage>(ActionBar->GetWidgetFromName(FName(*name))));
+		UImage* Image = nullptr;
+
+		if (Slot)
+			Image = Cast<UImage>(Slot->GetWidgetFromName(FName("Image0")));
+
+		if(Image)
+			Slots.Add(Image);
 	}
 
 	// Get a pointer to the GameMode
